@@ -1,3 +1,0 @@
-/Users/keith/miniconda3/envs/stenv/lib/python3.12/site-packages/grizli/grismconf.py: 770
-^^^
-I hardcoded a line so it would know where to find the roman conf file and dispersion solution.
