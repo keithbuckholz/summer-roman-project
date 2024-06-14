@@ -2,9 +2,15 @@ from astropy.io import fits
 import numpy as np
 import sys
 
-filepath, ext, newfile = sys.argv
+ext = 1
 
-given_fits = fits.open(file)
+if len(sys.argv) == 4:
+    _, filepath, newfile, k = sys.argv
+else:
+    _. filepath, ext, newfile, k = sys.argv
 
-given_fits[1].data = np.rot90(given_fits[ext].data)
+
+given_fits = fits.open("%s" %filepath)
+
+given_fits[1].data = np.rot90(given_fits[ext].data, k=int(k))
 given_fits.writeto(newfile, overwrite=True)
