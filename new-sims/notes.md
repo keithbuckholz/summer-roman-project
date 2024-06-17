@@ -46,26 +46,26 @@ After some number of dispersions, it begins to log this error. It continues calc
 Printing upon both success and failure reveals intermittent failure from the start, not full failure after some threshold.
 
 ```
-\########################################## 
-\# ! Exception (2024-06-14 20:53:42.586)
-\#
-\# !Traceback (most recent call last):
-\# !  File "/Users/keith/miniconda3/envs/phot-griz/lib/python3.12/site-packages/grizli/model.py", line 419, in process_config
-\# !    self.flat_index = self.idx[dyc + self.x0[0], self.dxpix]
-\# !                      ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-\# !IndexError: index 99 is out of bounds for axis 0 with size 52
-\# !
-\# !During handling of the above exception, another exception occurred:
-\# !
-\# !Traceback (most recent call last):
-\# !  File "/Users/keith/miniconda3/envs/phot-griz/lib/python3.12/site-packages/grizli/model.py", line 3176, in compute_model_orders
-\# !    beam = GrismDisperser(id=id,
-\# !           ^^^^^^^^^^^^^^^^^^^^^
-\# !  File "/Users/keith/miniconda3/envs/phot-griz/lib/python3.12/site-packages/grizli/model.py", line 289, in __init__
-\# !    self.process_config()
-\# !IndexError
-\# !
-\######################################### 
+########################################## 
+# ! Exception (2024-06-14 20:53:42.586)
+#
+# !Traceback (most recent call last):
+# !  File "/Users/keith/miniconda3/envs/phot-griz/lib/python3.12/site-packages/grizli/model.py", line 419, in process_config
+# !    self.flat_index = self.idx[dyc + self.x0[0], self.dxpix]
+# !                      ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# !IndexError: index 99 is out of bounds for axis 0 with size 52
+# !
+# !During handling of the above exception, another exception occurred:
+# !
+# !Traceback (most recent call last):
+# !  File "/Users/keith/miniconda3/envs/phot-griz/lib/python3.12/site-packages/grizli/model.py", line 3176, in compute_model_orders
+# !    beam = GrismDisperser(id=id,
+# !           ^^^^^^^^^^^^^^^^^^^^^
+# !  File "/Users/keith/miniconda3/envs/phot-griz/lib/python3.12/site-packages/grizli/model.py", line 289, in __init__
+# !    self.process_config()
+# !IndexError
+# !
+######################################### 
 ```
 
 These are some failed values for the variables. self.dxpix and self.x0[0] seem to be constant for failed values. Presusmably it's an issue with dyc or idx then.
