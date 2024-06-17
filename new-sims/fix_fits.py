@@ -1,7 +1,7 @@
 from astropy.io import fits
 import sys
 
-_, file, key, value, newfile = sys.argv
+_, file, newfile = sys.argv
 
 direct_file = file
 direct_fits = fits.open(direct_file)
