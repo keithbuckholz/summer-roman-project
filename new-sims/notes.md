@@ -27,6 +27,9 @@ if instrume == 'ROMAN':
 at this location in the Grizli code: \
 `/Users/keith/miniconda3/envs/stenv/lib/python3.12/site-packages/grizli/grismconf.py: 770`
 
+## Basic sim
+
+Running Basic-sim.ipynb, the built-in photutils_detection method does a decent job. Doing things this way does not encounter the issue with failure to disperse. The is a fair difference between the Grizli sim and the Wang et al sim, but as of now, it's better than creating a seperate segmentation map.
 
 ## WIP Issues
 
@@ -68,7 +71,7 @@ Printing upon both success and failure reveals intermittent failure from the sta
 ######################################### 
 ```
 
-These are some failed values for the variables. self.dxpix and self.x0[0] seem to be constant for failed values. Presusmably it's an issue with dyc or idx then.
+These are the relevant variables that are leading up to the error in question. self.dxpix and self.x0[0] seem to be constant for failed values. Presusmably it's an issue with dyc or idx then.
 
 ```
 dyc: [70 70 70 ... 48 48 48] 
