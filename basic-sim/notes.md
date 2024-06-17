@@ -6,7 +6,7 @@ pip install . <- install photutils=1.3 to use deprecated source_properties in Gr
 
 use .value to keep the astropy.quantity object dimensionless
 
-sim_g102.object_dispersers[id] ---> list has a dictionary in the [2] index: sim_g102.object_dispersers[id][2]['A']
+`sim_g102.object_dispersers[id]['A'] ---> list has a dictionary in the [2] index: sim_g102.object_dispersers[id][2]['A']`
 
 grizli/grizli/data/template/erb2010.dat ---> commit id 8428343
 
