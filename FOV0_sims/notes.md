@@ -31,7 +31,15 @@ at this location in the Grizli code: \
 
 Running Basic-sim.ipynb, the built-in photutils_detection method does a decent job. Doing things this way does not encounter the issue with failure to disperse. The is a fair difference between the Grizli sim and the Wang et al sim, but as of now, it's better than creating a seperate segmentation map.
 
-## WIP Issues
+## WIP Issue
+
+When the size is set sufficiently large, anything within 10 pix of the y-axis cannot be found in the segmentation image. This issue only occurs when a segmentation image is produced and provided. If photutils_detection is used instead, no error is thrown becuase those objects are never identified to begin with.
+
+## Retired Issues
+
+Issue was due to insufficent size cutout. Provide the compute_full_model function call with the arguments compute_size=False and size=75 was sufficient to correct for this issue. ts- notebooks deleted; directory cleaned and pruned for other excess files
+
+-----------------------------------
 
 In troubleshooting this issue, I've created some notebooks with names beggining with ts-.... These notebooks compare differents ways to produce/demonstrate this issue. i.e. rotating the image causes this issue for different galaxies, cropping the image before modelling causes the issue.
 
