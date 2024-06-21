@@ -5,41 +5,63 @@
 Grizli expects a few things in the header that may not be there or accurate: \
 INSTRUME \
 FILTER \
+CONFFILE \
 EFFEXPTM
 
-I've written a simply script (fix_fits.py) that will put intrument and filter in the header as: \
-INSTRUME = ROMAN \
-FILTER = det1 \
-call: `python fix_fits.py original_filename fixed_filename`
+I've written a simply script (fix_fits.py) that will put intrument, filter, and config file location in the header as: \
+INSTRUME = "ROMAN" \
+FILTER = "det1" \
+CONFFILE = "/Users/keith/astr/research_astr/FOV0/Roman.det1.07242020.conf" \
+Command-Line Input: `python fix_fits.py original_filename fixed_filename`
 
-I've also written a simple rotation script: \
-call: `python rotate.py original_filename image_extension(optional) new_filename k_number_of_rotations`
+I've also written a simple rotation script since Roman disperses in y and aXeSim disperses in x: \
+Command-Line Input: `python rotate.py original_filename image_extension(optional) new_filename k_number_of_rotations`
 
 ## Config File
 
-IPAC has a great aXe config file, but grizli doesn't know where to find it (or even that it should look, it just throws an error).
-I added this couple of lines:
+IPAC has a great aXe config file, but grizli doesn't know where to find it by defaut. The config filepath can be included in the header data and grizli can sort it out from there. Details on how to do this are above.
+
+## Two methods: Basic-sim, Full-sim
+
+I've got two notebooks that differ by one line:
 ```
-if instrume == 'ROMAN':
-        conf_file = "/Users/keith/astr/research_astr/FOV0/Roman.det1.07242020.conf"
+roman_sim.photutils_detection(detect_thresh=2, grow_seg=0, gauss_fwhm=2., verbose=True, save_detection=True, use_seg=True)
 ```
+They return very similar results. The tables comtain the same number of objects and the images are very similar.
+This line takes ~7 seconds per run and doesn't seem to make a meaningful difference.
 
-at this location in the Grizli code: \
-`/Users/keith/miniconda3/envs/stenv/lib/python3.12/site-packages/grizli/grismconf.py: 770`
+I attempted running basic-sim, but providing no segmentation map. That produces an image with significant noise and background. It winds up a bit closer to the original slitless image Wang et al produced. Similar backgrounds, and slightly better alignment between dispersions.
 
-## Basic sim
+## WIP Issues
 
-Running Basic-sim.ipynb, the built-in photutils_detection method does a decent job. Doing things this way does not encounter the issue with failure to disperse. The is a fair difference between the Grizli sim and the Wang et al sim, but as of now, it's better than creating a seperate segmentation map.
+### Inconsistencies between Wang et al and Grizli image
+##### Problem
+The baseline and grizli model images are misaligned. Additionally, there is generally a fairly large difference between the Wang et al image and the Grizli image. They do not cancel out very well when subtracted from one another.
 
-## WIP Issue
+##### Working Solution
+Misalginment and doubling effect seem to be because we rotated our images opposite directions (Wang et al went counterslockwise; I went clockwise). Rotating the opposite direction minimizes misalignment and doubling. Unclear on the causes of the other differences.
 
-When the size is set sufficiently large, anything within 10 pix of the y-axis cannot be found in the segmentation image. This issue only occurs when a segmentation image is produced and provided. If photutils_detection is used instead, no error is thrown becuase those objects are never identified to begin with.
+### Generalized solution to max dy and cutout problem.
+##### Problem
+The grizli cutout sizes are determined by the object size. The Roman grism has a larger dy than many default cutout sizes have room for. At current, this can be overcome by setting `compute_size=False, size=76` in the `compute_full_model()` function call. Note that size changed from 75 to 76 when I started rotating counterclockwise before modelling. This change from 75 to 76 and the fact that other detectors use other config files points to a need to generalize the size calculation. That is, when modeling, the max dy for the chip should be computed once, then the size should be set large enough for that max dy for all dispersions on that chip. Increased cutout size means increased compute times, so a blanket excessive size for all chips should not be used instead.
+
+##### Working Solution
+First, the global extrema can be found. Then, if the extrema is not within the bound, Langrange multipliers should be applied to determine the local extrema.
 
 ## Retired Issues
 
+### Objects y_flt<10 are not found in seg image - pad
+##### Solution
+The problem explanation was pretty far off. The issue of objects too close to the edge not being found is resolved by padding. pad=100 is sufficient for detector 1. When I used photutils_detections, I was setting that pad; so, no error was occured. The default pad [64, 256] is not sufficient in the x-direction; thus an error occured with objects on the edge.
+
+##### Problem
+When the size is set sufficiently large, anything within 10 pix of the y-axis cannot be found in the segmentation image. This issue only occurs when a segmentation image is produced and provided. If photutils_detection is used instead, no error is thrown becuase those objects are never identified to begin with.
+
+### self.idx[] IndexError - cutout size
+##### Solution
 Issue was due to insufficent size cutout. Provide the compute_full_model function call with the arguments compute_size=False and size=75 was sufficient to correct for this issue. ts- notebooks deleted; directory cleaned and pruned for other excess files
 
------------------------------------
+##### Problem: 
 
 In troubleshooting this issue, I've created some notebooks with names beggining with ts-.... These notebooks compare differents ways to produce/demonstrate this issue. i.e. rotating the image causes this issue for different galaxies, cropping the image before modelling causes the issue.
 
