@@ -4,7 +4,7 @@ from photutils.segmentation import SourceFinder, make_2dgaussian_kernel
 from photutils.background import Background2D, MedianBackground
 from astropy.convolution import convolve
 
-def produce_seg_map(direct_file, ext=1, **kwargs):
+def produce_seg_map(direct_file, seg_file, ext=1, **kwargs):
     """
     Function that produces and returns a segmentation map of a provided fits.
 
@@ -74,4 +74,3 @@ def produce_seg_map(direct_file, ext=1, **kwargs):
     fits.writeto(seg_file, seg_map, header=header,overwrite=True)
     return seg_map
 
-    

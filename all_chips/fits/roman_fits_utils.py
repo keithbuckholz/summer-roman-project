@@ -23,7 +23,7 @@ def fix_hdr(filename, new_filename, hdr_dict, overwrite=True):
     """
 
     # Check that arguments are of appropriate type
-    assert isinstance(filename & new_filename, str), "Filenames must be strings"
+    assert isinstance(filename, str) and isinstance(new_filename, str), "Filenames must be strings"
     assert isinstance(hdr_dict, dict), 'Must supply a dictionary of header changes with format: {"key": "ext;value"}'
     assert isinstance(overwrite, bool), "overwrite argument must be boolean"
 
@@ -69,8 +69,8 @@ def rotate_img(filename, new_filename, k=3, ext=1, overwrite=True):
     """
 
     # Check arguments are of expected type
-    assert isinstance(filename & new_filename, str), "Filenames must be strings"
-    assert isinstance(k & ext, int), "number of rotations (k) and fits extension (ext) must be type int"
+    assert isinstance(filename, str) and isinstance(new_filename, str), "Filenames must be strings"
+    assert isinstance(k, int) and isinstance(ext, int), "number of rotations (k) and fits extension (ext) must be type int"
 
     # Open fits file
     given_fits = fits.open(filename)
