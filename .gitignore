@@ -1,6 +1,7 @@
 __pycache__
 test*
 *.fits
+!sens_0720_2020.fits
 *.cat
 mastDownload
 grizli_demo_data.tar.gz
