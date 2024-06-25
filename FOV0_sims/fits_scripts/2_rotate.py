@@ -12,5 +12,5 @@ else:
 
 given_fits = fits.open("%s" %filepath)
 
-given_fits[1].data = np.rot90(given_fits[ext].data, k=int(k))
+given_fits[ext].data = np.rot90(given_fits[ext].data, k=int(k))
 given_fits.writeto(newfile, overwrite=True)
