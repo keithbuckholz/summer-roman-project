@@ -34,6 +34,7 @@ def fix_hdr(filename, new_filename, hdr_dict, overwrite=True):
     for key in hdr_dict.keys():
         try:
             ext, value = hdr_dict[key].split(";") # split "ext;value" into seperate variables
+            ext = int(ext)
         except ValueError as e:
             msg = 'Dictionary values must have format "ext;hdr_value"'
             raise ValueError(msg)

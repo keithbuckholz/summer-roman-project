@@ -34,6 +34,7 @@ def produce_seg_map(direct_file, seg_file, ext=1, **kwargs):
                            "contrast": 0.001}
 
     # Background_args
+    bwargs = {}
     for arg in default_bkg_args.keys():
         # if argument in kwargs: use kwargs value
         # else: use default values
@@ -43,6 +44,7 @@ def produce_seg_map(direct_file, seg_file, ext=1, **kwargs):
             bwargs[arg] = default_bkg_args[arg]
 
     # Background_args
+    sfwargs = {}
     for arg in default_finder_args.keys():
         # if argument in kwargs: use kwargs value
         # else: use default values
