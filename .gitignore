@@ -6,3 +6,6 @@ test*
 mastDownload
 grizli_demo_data.tar.gz
 goals.md
+pipeline/j033216m2743/*
+FOV0_extraction/copying_pipeline/FOV0/*
+FOV0_extraction/copying_pipeline/*.y*ml
