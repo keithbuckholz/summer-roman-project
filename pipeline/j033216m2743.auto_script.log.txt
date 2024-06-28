@@ -1,0 +1,113 @@
+# (2024-06-28 14:00:42.475)
+### Pipeline start
+
+########################################## 
+# ! Exception (2024-06-28 14:00:48.108)
+#
+# !Traceback (most recent call last):
+# !  File "/Users/keith/miniconda3/envs/grizli_env/lib/python3.12/site-packages/grizli/pipeline/auto_script.py", line 479, in go
+# !    gaia = grizli_catalog.gaia_catalog_for_assoc(assoc_name=root)
+# !           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# !  File "/Users/keith/miniconda3/envs/grizli_env/lib/python3.12/site-packages/grizli/catalog.py", line 448, in gaia_catalog_for_assoc
+# !    res = db.SQL(f"""select t_min, t_max, filter, footprint
+# !          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# !ModuleNotFoundError: No module named 'sqlalchemy'
+# !
+######################################### 
+
+# (2024-06-28 14:00:48.109)
+
+auto_script.fetch_files(**{'field_root': 'j033216m2743', 'HOME_PATH': '$PWD', 'paths': {'home': '/Users/keith/astr/research_astr/summer-roman-project/pipeline', 'base': '/Users/keith/astr/research_astr/summer-roman-project/pipeline/j033216m2743', 'raw': '/Users/keith/astr/research_astr/summer-roman-project/pipeline/j033216m2743/RAW', 'prep': '/Users/keith/astr/research_astr/summer-roman-project/pipeline/j033216m2743/Prep', 'persist': '/Users/keith/astr/research_astr/summer-roman-project/pipeline/j033216m2743/Persistence', 'extract': '/Users/keith/astr/research_astr/summer-roman-project/pipeline/j033216m2743/Extractions', 'thumbs': '/Users/keith/astr/research_astr/summer-roman-project/pipeline/j033216m2743/Extractions'}, 'inst_products': {'ACS/WFC': ['FLC'], 'WFC3/IR': ['RAW'], 'WFC3/UVIS': ['FLC'], 'WFPC2/PC': ['C0M', 'C1M'], 'WFPC2/WFC': ['C0M', 'C1M']}, 'remove_bad': True, 'reprocess_parallel': False, 'reprocess_clean_darks': True, 's3_sync': False, 'fetch_flt_calibs': ['IDCTAB', 'PFLTFILE', 'NPOLFILE'], 'filters': ['F410M', 'F467M', 'F547M', 'F550M', 'F621M', 'F689M', 'F763M', 'F845M', 'F200LP', 'F350LP', 'F435W', 'F438W', 'F439W', 'F450W', 'F475W', 'F475X', 'F555W', 'F569W', 'F600LP', 'F606W', 'F622W', 'F625W', 'F675W', 'F702W', 'F775W', 'F791W', 'F814W', 'F850LP', 'G800L', 'F098M', 'F127M', 'F139M', 'F153M', 'F105W', 'F110W', 'F125W', 'F140W', 'F160W', 'G102', 'G141', 'F090W', 'F115W', 'F140M', 'F150W', 'F158M', 'F200W', 'F277W', 'F356W', 'F3880M', 'F430M', 'F444W', 'F480M', 'GR150C', 'GR150R', 'F150W2', 'F322W2', 'F070W', 'F162M', 'F182M', 'F210M', 'F250M', 'F300M', 'F335M', 'F360M', 'F410M', 'F430M', 'F460M', 'F480M', 'F164N', 'F187N', 'F212N', 'F323N', 'F405N', 'F466N', 'F470N'], 'min_bad_expflag': 2, 'fetch_only': False, 'force_rate': True, 'get_rateints': False, 'get_recalibrated_rate': True, 'recalibrate_jwst': False, 's3path': None})
+
+Fetch 16 files with mastquery.utils.download_From_mast
+# (2024-06-28 14:02:34.993)
+
+auto_script.parse_visits(**{'files': [], 'field_root': 'j033216m2743', 'RAW_PATH': '/Users/keith/astr/research_astr/summer-roman-project/pipeline/j033216m2743/RAW', 'use_visit': True, 'combine_same_pa': False, 'combine_minexp': 2, 'is_dash': False, 'filters': ['F410M', 'F467M', 'F547M', 'F550M', 'F621M', 'F689M', 'F763M', 'F845M', 'F200LP', 'F350LP', 'F435W', 'F438W', 'F439W', 'F450W', 'F475W', 'F475X', 'F555W', 'F569W', 'F600LP', 'F606W', 'F622W', 'F625W', 'F675W', 'F702W', 'F775W', 'F791W', 'F814W', 'F850LP', 'G800L', 'F098M', 'F127M', 'F139M', 'F153M', 'F105W', 'F110W', 'F125W', 'F140W', 'F160W', 'G102', 'G141', 'F090W', 'F115W', 'F140M', 'F150W', 'F158M', 'F200W', 'F277W', 'F356W', 'F3880M', 'F430M', 'F444W', 'F480M', 'GR150C', 'GR150R', 'F150W2', 'F322W2', 'F070W', 'F162M', 'F182M', 'F210M', 'F250M', 'F300M', 'F335M', 'F360M', 'F410M', 'F430M', 'F460M', 'F480M', 'F164N', 'F187N', 'F212N', 'F323N', 'F405N', 'F466N', 'F470N'], 'max_dt': 1.0, 'visit_split_shift': 1.5, 'file_query': '*'})
+
+Load visit information from ./j033216m2743_visits.yaml
+# (2024-06-28 14:02:35.168)
+
+auto_script.preprocess(**{'field_root': 'j033216m2743', 'HOME_PATH': '/Users/keith/astr/research_astr/summer-roman-project/pipeline', 'PERSIST_PATH': '/Users/keith/astr/research_astr/summer-roman-project/pipeline/j033216m2743/Persistence', 'min_overlap': 0.2, 'make_combined': False, 'catalogs': ['PS1', 'DES', 'NSC', 'SDSS', 'GAIA', 'WISE'], 'use_visit': True, 'master_radec': None, 'parent_radec': None, 'use_first_radec': False, 'skip_imaging': False, 'clean': True, 'skip_single_optical_visits': False, 'visit_prep_args': {'align_thresh': None, 'align_rms_limit': 2, 'align_mag_limits': [14, 24, 0.05], 'align_assume_close': False, 'align_transform': None, 'align_ref_border': 100, 'align_guess': None, 'max_err_percentile': 99, 'align_min_flux_radius': 1.0, 'align_min_nexp': 2, 'align_final_niter': 8, 'catalog_mask_pad': 0.05, 'match_catalog_density': False, 'skymethod': 'localmin', 'drizzle_params': {}, 'single_image_CRs': True, 'run_tweak_align': True, 'tweak_threshold': 3.0, 'tweak_fit_order': -1, 'tweak_max_dist': 100, 'tweak_n_min': 10, 'tweak_ref_exp': 0, 'tweak_mosaic_iters': 2, 'align_simple': False, 'align_clip': 120, 'do_pure_parallel_wcs': True, 'column_average': True, 'sky_iter': 10, 'iter_atol': 0.0001, 'imaging_bkg_params': {'bh': 256, 'bw': 256, 'fh': 3, 'fw': 3, 'pixel_scale': 0.1, 'get_median': False}, 'run_separate_chip_sky': True, 'fix_stars': False, 'reference_catalogs': ['LS_DR9', 'PS1', 'DES', 'DSC', 'SDSS', 'GAIA', 'WISE'], 'outlier_threshold': 4, 'skip_nircam_grism_sky': True, 'nircam_wisp_kwargs': {'niter': 3, 'update': True}, 'oneoverf_kwargs': {'thresholds': [5, 4, 3], 'dilate_iterations': 3, 'deg_pix': 64, 'other_axis': False}, 'snowball_kwargs': {'snowball_erode': 4, 'snowball_dilate': 18, 'mask_bit': 1024, 'instruments': ['NIRCAM', 'NIRISS'], 'max_fraction': 0.3, 'snowblind_kwargs': {'new_jump_flag': 1024, 'min_radius': 4, 'growth_factor': 1.5, 'unset_first': True}}, 'angle_background_kwargs': {'threshold': 1.8, 'detection_background': True, 'angles': [30.0, -30.0, 0, 90], 'suffix': 'angles', 'niter': 3, 'instruments': []}, 'miri_skyflat': False, 'miri_skyfile': None, 'use_skyflats': True, 'use_self_catalog': False}, 'persistence_args': {'dq_value': 1024, 'err_threshold': 0.5, 'grow_mask': 3, 'verbose': True, 'reset': False}})
+
+Load visit information from ./j033216m2743_visits.yaml
+# (2024-06-28 14:02:35.183)
+
+prep.process_direct_grism_visit(**{'direct': {'files': ['ib6o21qnq_flt.fits', 'ib6o21qqq_flt.fits', 'ib6o21r7q_flt.fits', 'ib6o21raq_flt.fits'], 'footprint': <POLYGON ((53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 5...>, 'footprints': [[<POLYGON ((53.058 -27.729, 53.047 -27.696, 53.089 -27.686, 53.1 -27.718, 53....>], [<POLYGON ((53.052 -27.73, 53.041 -27.698, 53.083 -27.687, 53.094 -27.72, 53....>], [<POLYGON ((53.053 -27.733, 53.042 -27.7, 53.084 -27.69, 53.095 -27.723, 53.0...>], [<POLYGON ((53.059 -27.732, 53.048 -27.699, 53.09 -27.688, 53.101 -27.721, 53...>]], 'product': 'wfc3-ersii-g01-b6o-21-119.0-f098m'}, 'grism': {'files': ['ib6o21qmq_flt.fits', 'ib6o21qoq_flt.fits', 'ib6o21r6q_flt.fits', 'ib6o21r8q_flt.fits'], 'footprint': <POLYGON ((53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 5...>, 'footprints': [[<POLYGON ((53.058 -27.729, 53.047 -27.696, 53.089 -27.686, 53.1 -27.718, 53....>], [<POLYGON ((53.052 -27.73, 53.041 -27.698, 53.083 -27.687, 53.094 -27.72, 53....>], [<POLYGON ((53.053 -27.733, 53.042 -27.7, 53.084 -27.69, 53.094 -27.723, 53.0...>], [<POLYGON ((53.059 -27.732, 53.048 -27.699, 53.09 -27.688, 53.1 -27.721, 53.0...>]], 'product': 'wfc3-ersii-g01-b6o-21-119.0-g102'}, 'radec': None, 'outlier_threshold': 4, 'align_clip': 120, 'align_thresh': None, 'align_mag_limits': [14, 24, 0.05], 'align_rms_limit': 2, 'align_triangle_ba_max': 0.9, 'align_ref_border': 100, 'align_min_flux_radius': 1.0, 'align_min_nexp': 2, 'align_assume_close': False, 'align_transform': None, 'align_guess': None, 'align_final_niter': 8, 'max_err_percentile': 99, 'catalog_mask_pad': 0.05, 'match_catalog_density': False, 'column_average': True, 'sky_iter': 10, 'run_tweak_align': True, 'tweak_fit_order': -1, 'skip_direct': False, 'fix_stars': False, 'tweak_max_dist': 100, 'tweak_n_min': 10, 'tweak_threshold': 3.0, 'tweak_ref_exp': 0, 'tweak_mosaic_iters': 2, 'align_simple': False, 'single_image_CRs': True, 'skymethod': 'localmin', 'drizzle_params': {}, 'iter_atol': 0.0001, 'static_mask': False, 'imaging_bkg_params': {'bh': 256, 'bw': 256, 'fh': 3, 'fw': 3, 'pixel_scale': 0.1, 'get_median': False}, 'run_separate_chip_sky': True, 'separate_chip_kwargs': {}, 'reference_catalogs': ['LS_DR9', 'PS1', 'DES', 'DSC', 'SDSS', 'GAIA', 'WISE'], 'use_self_catalog': False, 'nircam_wisp_kwargs': {'niter': 3, 'update': True}, 'skip_nircam_grism_sky': True, 'oneoverf_kwargs': {'thresholds': [5, 4, 3], 'dilate_iterations': 3, 'deg_pix': 64, 'other_axis': False}, 'snowball_kwargs': {'snowball_erode': 4, 'snowball_dilate': 18, 'mask_bit': 1024, 'instruments': ['NIRCAM', 'NIRISS'], 'max_fraction': 0.3, 'snowblind_kwargs': {'new_jump_flag': 1024, 'min_radius': 4, 'growth_factor': 1.5, 'unset_first': True}}, 'angle_background_kwargs': {'threshold': 1.8, 'detection_background': True, 'angles': [30.0, -30.0, 0, 90], 'suffix': 'angles', 'niter': 3, 'instruments': []}, 'miri_skyflat': False, 'miri_skyfile': None, 'use_skyflats': True, 'do_pure_parallel_wcs': True})
+
+# ../RAW/ib6o21qnq_flt.fits -> ib6o21qnq_flt.fits  / bpix: $iref/badpix_spars200_Nov9.fits / wfc3ir_dark_badpix_2019.01.12.fits
+# prep.apply_region_mask_from_db: query failed
+# ../RAW/ib6o21qqq_flt.fits -> ib6o21qqq_flt.fits  / bpix: $iref/badpix_spars200_Nov9.fits / wfc3ir_dark_badpix_2019.01.12.fits
+# prep.apply_region_mask_from_db: query failed
+# ../RAW/ib6o21r7q_flt.fits -> ib6o21r7q_flt.fits  / bpix: $iref/badpix_spars200_Nov9.fits / wfc3ir_dark_badpix_2019.01.12.fits
+# prep.apply_region_mask_from_db: query failed
+# ../RAW/ib6o21raq_flt.fits -> ib6o21raq_flt.fits  / bpix: $iref/badpix_spars200_Nov9.fits / wfc3ir_dark_badpix_2019.01.12.fits
+# prep.apply_region_mask_from_db: query failed
+# ../RAW/ib6o21qmq_flt.fits -> ib6o21qmq_flt.fits  / flat: uc72113oi_pfl.fits / bpix: $iref/badpix_spars200_Nov9.fits / wfc3ir_dark_badpix_2019.01.12.fits
+# prep.apply_region_mask_from_db: query failed
+# ../RAW/ib6o21qoq_flt.fits -> ib6o21qoq_flt.fits  / flat: uc72113oi_pfl.fits / bpix: $iref/badpix_spars200_Nov9.fits / wfc3ir_dark_badpix_2019.01.12.fits
+# prep.apply_region_mask_from_db: query failed
+# ../RAW/ib6o21r6q_flt.fits -> ib6o21r6q_flt.fits  / flat: uc72113oi_pfl.fits / bpix: $iref/badpix_spars200_Nov9.fits / wfc3ir_dark_badpix_2019.01.12.fits
+# prep.apply_region_mask_from_db: query failed
+# ../RAW/ib6o21r8q_flt.fits -> ib6o21r8q_flt.fits  / flat: uc72113oi_pfl.fits / bpix: $iref/badpix_spars200_Nov9.fits / wfc3ir_dark_badpix_2019.01.12.fits
+# prep.apply_region_mask_from_db: query failed
+# (2024-06-28 14:02:37.770)
+
+prep.tweak_align(**{'direct_group': {'files': ['ib6o21qnq_flt.fits', 'ib6o21qqq_flt.fits', 'ib6o21r7q_flt.fits', 'ib6o21raq_flt.fits'], 'footprint': <POLYGON ((53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 5...>, 'footprints': [[<POLYGON ((53.058 -27.729, 53.047 -27.696, 53.089 -27.686, 53.1 -27.718, 53....>], [<POLYGON ((53.052 -27.73, 53.041 -27.698, 53.083 -27.687, 53.094 -27.72, 53....>], [<POLYGON ((53.053 -27.733, 53.042 -27.7, 53.084 -27.69, 53.095 -27.723, 53.0...>], [<POLYGON ((53.059 -27.732, 53.048 -27.699, 53.09 -27.688, 53.101 -27.721, 53...>]], 'product': 'wfc3-ersii-g01-b6o-21-119.0-f098m'}, 'grism_group': {'files': ['ib6o21qmq_flt.fits', 'ib6o21qoq_flt.fits', 'ib6o21r6q_flt.fits', 'ib6o21r8q_flt.fits'], 'footprint': <POLYGON ((53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 5...>, 'footprints': [[<POLYGON ((53.058 -27.729, 53.047 -27.696, 53.089 -27.686, 53.1 -27.718, 53....>], [<POLYGON ((53.052 -27.73, 53.041 -27.698, 53.083 -27.687, 53.094 -27.72, 53....>], [<POLYGON ((53.053 -27.733, 53.042 -27.7, 53.084 -27.69, 53.094 -27.723, 53.0...>], [<POLYGON ((53.059 -27.732, 53.048 -27.699, 53.09 -27.688, 53.1 -27.721, 53.0...>]], 'product': 'wfc3-ersii-g01-b6o-21-119.0-g102'}, 'max_dist': 100, 'n_min': 10, 'key': ' ', 'threshold': 3.0, 'drizzle': False, 'fit_order': -1, 'ref_exp': 0, 'flux_radius': [0.5, 5], 'min_nexp': 2, 'master_radec': None, 'make_figures': True})
+
+### Tweak alignment: use_sewpy=False  master_radec=None
+make_SEP_catalog: sep version = 1.2.1
+# (2024-06-28 14:02:37.799)
+sep: Image AB zeropoint =  25.664
+# (2024-06-28 14:02:37.812)
+SEP: Get background {'bw': 32.0, 'bh': 32.0, 'fw': 3, 'fh': 3}
+compute_SEP_auto_params: sep version = 1.2.1
+compute_SEP_auto_params: autoparams=[2.5, <Quantity 0.35 arcsec>, 2.4, 3.8]; pixel_scale=0.12802374334504435; subpix=0; flux_radii=[0.2, 0.5, 0.9]
+# SEP ib6o21qnq_flt.cat.fits: 497 objects
+make_SEP_catalog: sep version = 1.2.1
+# (2024-06-28 14:02:38.059)
+sep: Image AB zeropoint =  25.664
+# (2024-06-28 14:02:38.073)
+SEP: Get background {'bw': 32.0, 'bh': 32.0, 'fw': 3, 'fh': 3}
+compute_SEP_auto_params: sep version = 1.2.1
+compute_SEP_auto_params: autoparams=[2.5, <Quantity 0.35 arcsec>, 2.4, 3.8]; pixel_scale=0.12802056375985046; subpix=0; flux_radii=[0.2, 0.5, 0.9]
+# SEP ib6o21qqq_flt.cat.fits: 439 objects
+make_SEP_catalog: sep version = 1.2.1
+# (2024-06-28 14:02:38.308)
+sep: Image AB zeropoint =  25.664
+# (2024-06-28 14:02:38.321)
+SEP: Get background {'bw': 32.0, 'bh': 32.0, 'fw': 3, 'fh': 3}
+compute_SEP_auto_params: sep version = 1.2.1
+compute_SEP_auto_params: autoparams=[2.5, <Quantity 0.35 arcsec>, 2.4, 3.8]; pixel_scale=0.12802471848478825; subpix=0; flux_radii=[0.2, 0.5, 0.9]
+# SEP ib6o21r7q_flt.cat.fits: 668 objects
+make_SEP_catalog: sep version = 1.2.1
+# (2024-06-28 14:02:38.586)
+sep: Image AB zeropoint =  25.664
+# (2024-06-28 14:02:38.600)
+SEP: Get background {'bw': 32.0, 'bh': 32.0, 'fw': 3, 'fh': 3}
+compute_SEP_auto_params: sep version = 1.2.1
+compute_SEP_auto_params: autoparams=[2.5, <Quantity 0.35 arcsec>, 2.4, 3.8]; pixel_scale=0.12802083363438435; subpix=0; flux_radii=[0.2, 0.5, 0.9]
+# SEP ib6o21raq_flt.cat.fits: 418 objects
+# tw ib6o21qnq_flt.fits [-0.000,  0.000]  [ 0.000,  0.000] N=100 Ntot=237
+# tw ib6o21qqq_flt.fits [ 0.088, -0.025]  [ 0.029,  0.028] N=17 Ntot=194
+# tw ib6o21r7q_flt.fits [ 0.167,  0.117]  [ 0.047,  0.028] N=14 Ntot=328
+# tw ib6o21raq_flt.fits [ 0.136,  0.342]  [ 0.027,  0.045] N=18 Ntot=193
+# (2024-06-28 14:02:41.028)
+
+prep.find_direct_grism_pairs(**{'direct': {'files': ['ib6o21qnq_flt.fits', 'ib6o21qqq_flt.fits', 'ib6o21r7q_flt.fits', 'ib6o21raq_flt.fits'], 'footprint': <POLYGON ((53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 5...>, 'footprints': [[<POLYGON ((53.058 -27.729, 53.047 -27.696, 53.089 -27.686, 53.1 -27.718, 53....>], [<POLYGON ((53.052 -27.73, 53.041 -27.698, 53.083 -27.687, 53.094 -27.72, 53....>], [<POLYGON ((53.053 -27.733, 53.042 -27.7, 53.084 -27.69, 53.095 -27.723, 53.0...>], [<POLYGON ((53.059 -27.732, 53.048 -27.699, 53.09 -27.688, 53.101 -27.721, 53...>]], 'product': 'wfc3-ersii-g01-b6o-21-119.0-f098m'}, 'grism': {'files': ['ib6o21qmq_flt.fits', 'ib6o21qoq_flt.fits', 'ib6o21r6q_flt.fits', 'ib6o21r8q_flt.fits'], 'footprint': <POLYGON ((53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 53.053 -27.733, 5...>, 'footprints': [[<POLYGON ((53.058 -27.729, 53.047 -27.696, 53.089 -27.686, 53.1 -27.718, 53....>], [<POLYGON ((53.052 -27.73, 53.041 -27.698, 53.083 -27.687, 53.094 -27.72, 53....>], [<POLYGON ((53.053 -27.733, 53.042 -27.7, 53.084 -27.69, 53.094 -27.723, 53.0...>], [<POLYGON ((53.059 -27.732, 53.048 -27.699, 53.09 -27.688, 53.1 -27.721, 53.0...>]], 'product': 'wfc3-ersii-g01-b6o-21-119.0-g102'}, 'check_pixel': [507, 507], 'toler': 0.1, 'key': ' ', 'same_visit': True, 'log': True})
+
+
+grism_matches = OrderedDict({'ib6o21qnq_flt.fits': ['ib6o21qmq_flt.fits'], 'ib6o21qqq_flt.fits': ['ib6o21qoq_flt.fits'], 'ib6o21r7q_flt.fits': ['ib6o21r6q_flt.fits'], 'ib6o21raq_flt.fits': ['ib6o21r8q_flt.fits']})
+
+# (2024-06-28 14:02:41.079)
+
+prep.apply_tweak_shifts(**{'wcs_ref': WCS Keywords
+
+Number of WCS axes: 2
+CTYPE : 'RA---TAN-SIP' 'DEC--TAN-SIP' 
+CRVAL : 53.073493425192325 -27.70721878354988 
+CRPIX : 507.0 507.0 
+CD1_1 CD1_2  : 3.61536586314935e-05 9.4224697913275e-06 
+CD2_1 CD2_2  : 1.04287036387954e-05 -3.2262362313019e-05 
+NAXIS : 1014  1014, 'shift_dict': OrderedDict({'ib6o21qnq_flt.fits': [-2.76685341304983e-11, 5.692868398909923e-11, 0.0, 1.0, 100, array([3.99629826e-09, 8.53453296e-09])], 'ib6o21qqq_flt.fits': [0.0884289024482996, -0.025247243444823653, 0.0, 1.0, 17, array([0.02879185, 0.02812361])], 'ib6o21r7q_flt.fits': [0.1672605386029815, 0.11657668246257913, 0.0, 1.0, 14, array([0.04702857, 0.02785025])], 'ib6o21raq_flt.fits': [0.13590423239023153, 0.3424201573964325, 0.0, 1.0, 18, array([0.02717217, 0.04545224])]}), 'grism_matches': OrderedDict({'ib6o21qnq_flt.fits': ['ib6o21qmq_flt.fits'], 'ib6o21qqq_flt.fits': ['ib6o21qoq_flt.fits'], 'ib6o21r7q_flt.fits': ['ib6o21r6q_flt.fits'], 'ib6o21raq_flt.fits': ['ib6o21r8q_flt.fits']}), 'verbose': False, 'log': True})
+
+# prep.iterate_tweak_align: iteration 0

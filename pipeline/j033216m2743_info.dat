@@ -1,0 +1,7 @@
+#      53.07341     -27.70899  E(B-V)=0.008
+proposal_id j033216m2743 11359
+target j033216m2743 WFC3-ERSII-G01
+filter j033216m2743         WFC3/IR F098M    1     811.7
+filter j033216m2743         WFC3/IR F140W    1     811.7
+filter j033216m2743          WFC3/IR G102    1    4211.7
+filter j033216m2743          WFC3/IR G141    1    4211.7
