@@ -40,7 +40,11 @@ def modify_hdr(original_filename, new_filename, hdr_dict, overwrite=True):
             raise ValueError(msg)
 
         # Set the key=value in appropriate header
-        direct_fits[ext].header[key] = float(value)
+        # try:
+            # value = float(value)
+        # except ValueError:
+        #     pass
+        direct_fits[ext].header[key] = value
 
     # Save the altered fits file
     direct_fits.writeto(new_filename, overwrite=overwrite)
