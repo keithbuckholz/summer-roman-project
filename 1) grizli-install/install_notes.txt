@@ -1,0 +1,12 @@
+Create a conda environment from a stenv .yaml file
+
+first:
+pip install grizli
+then:
+pip install "grizli[whatever you need here]"
+
+Check instructions for GRIZLI directories and export statements in .bashrc
+
+Check instructions for python setup functions
+
+I needed to manually pip install dust-extinction when a notebook cell failed to import properly.
