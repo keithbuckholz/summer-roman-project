@@ -1,4 +1,5 @@
 __pycache__
+*.ipynb_checkpoints*
 test*
 *.fits
 !sens_0720_2020.fits
@@ -9,3 +10,4 @@ goals.md
 pipeline/j033216m2743/*
 FOV0_extraction/copying_pipeline/FOV0/*
 FOV0_extraction/copying_pipeline/*.y*ml
+FOV0_extraction/notebooks/WIP-SED-sim_2.ipynb
