@@ -2,7 +2,8 @@
 
 1) Factor of 2 issue; matching scale/count rate 
 2) Wavelength-depedent PSF 
-3) Producing direct image? (Minor capability as of now; not scaled to full image)
+3) 
+0) Producing direct image? (Minor capability for testing; we don't want to scale this)
 
 # Going forward plans
 
@@ -14,6 +15,7 @@
 
 # Resolution/Progress
 
+4) Apodizing makes a big difference. The window needs to be refined. A principled approach would probably be faster than trial-and-error.
 5) Built single_object_playground. Grizli seems to get total flux from spectrum. Disperses total flux according to direct image.
 
 # Quick Notes Space
