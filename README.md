@@ -1,13 +1,7 @@
 I think the most useful/interesting files for getting up to speed from the very beginning are: \
 0) tutorial/0_wget_files.ipynb                  \
 0) tutorial/1_Install_Grizli.ipynb              \
-0) tutorial/3_fits_files.ipynb                  \
-3) light_scripts/fits_prep                      \
-either:                                         \
-    integrated_sim/cutout_sim.ipynb             \
-or                                              \
-    integrated_sum/integrated_process.ipynb     \
-
+0) tutoral/one_long_notebook.ipynb
 
 
 Table of contents:
