@@ -12,6 +12,7 @@ import webbpsf
 from grizli.model import GrismFLT
 from astropy.io import fits
 from astropy.table import Table
+import astropy
 from tqdm import tqdm
 
 class grism_sim(GrismFLT):
@@ -23,32 +24,76 @@ class grism_sim(GrismFLT):
     ----------
     SED_dir: str
         Local real path to directory containing all relevant SEDs, and bandpass fits.
+
     fits_dir: str
         Local real path to directory containing direct image and segmentation map files.
+
     cat_dir: str
         Local real path to directory containing Catalog file.
+
     bandpass_file: str
         Bandpass filename. Spectra will be renormalized using catalog magnitudes and this bandpass file.
         default: wfirst_wfi_f158_001_syn.fits
+
     star_spec_file: str
         Star SED filename. All stars assumed to use same SED.
         default: ukg0v.dat
+
     direct_file: str
         Direct image filename. This direct image is passed into grizli to determine an objects flux distribution on the detector.
         default: ready_direct_GRS_FOV0_roll0_dx0_dy0_SCA1_direct_final.fits
+
     seg_file: str
         Segmentaion map filename. Segmentation map indicates object locations on detector. Can be an empty map, and produced with
-        put_on_seg_map method.
-        default: empty_seg.fits
+        put_on_seg_map method. If no segmentation map is provided, an empty one will be built and saved to /tmp.
+        default: None
+
     cat: str
         Catalog filename. Catalog contains object characteristics used for dispersion. Required characteristics/column names:
         NUMBER, X_IMAGE, Y_IMAGE, A_IMAGE, B_IMAGE, THETA_IMAGE, MAG_F1500W, MODIMAGE
+
+    config_file: str
+        If you do not prepare the direct image fits file first, you must pass in the real PATH to the config file you want Grizli
+        to use in this arg. 
+        default: None
+
     pad: int
         Padding added around model. Allows objects near the edge of the detector to disperse properly. If padding is too small, 
         object traces may begin off the image array causing a failure to disperse.
 
     Methods:
     ----------
+    prepare_direct_fits:
+        If the direct image passed in is not prepared first, this function will prepare and return the HDUList (i.e. open 
+        fits file). It will insert certain headerentries, and rotate the image. The image is rotated because Roman 
+        disperses along the y-axis, but Grizli disperses along the x-axis. 
+
+        Parameters:
+        ----------
+        open_fits: astropy.io.fits.hdu.hdulist.HDUList
+            Fits file opened with astropy.io.fits.open().
+
+        config_file: str
+            config_file or hdr_injection argument must be given
+            Full Path to config file describing Dispersion. See aXe use manual Chapter 5.2 for info on config file.
+            default: None
+        
+        hdr_injection: dict
+            config_file or hdr_injection argument must be given
+            Python dictionary of new/altered header information. Should be formation as {hdr_key: ext;hdr_value}.
+            This way the dictionary value can be split at the semi-colon into the fits extension where the header
+            data is the be changed and the appropriate value for that change.
+            default: None, later set to :
+            {"INSTRUME": "0;ROMAN", "FILTER": "0;d1_", "CONFFILE": "1;config_file"}
+
+    empty_seg_like:
+        Save an empty segmentation fits file in the /tmp folder using the direct image header and data shape.
+
+        Parameters:
+        ----------
+        open_fits: astropy.io.fits.hdu.hdulist.HDUList
+            Fits file opened with astropy.io.fits.open().    
+
     show_current_model:
         Turns model upright and trims padding. Calls plt.imshow, and passes in kwargs.
 
@@ -90,9 +135,10 @@ class grism_sim(GrismFLT):
     def __init__(self, SED_dir, fits_dir, cat_dir, 
                 bandpass_file="wfirst_wfi_f158_001_syn.fits", 
                 star_spec_file="ukg0v.dat",
-                direct_file="ready_direct_GRS_FOV0_roll0_dx0_dy0_SCA1_direct_final.fits", 
-                seg_file="empty_seg.fits", 
+                direct_file="GRS_FOV0_roll0_dx0_dy0_SCA1_direct_final.fits", 
+                seg_file=None, 
                 cat="MOT_SCA1_roll_0_dither_0x_0y_cut_zcut.txt", 
+                config_file=None,
                 pad=100):
 
         # Save Directories
@@ -102,20 +148,26 @@ class grism_sim(GrismFLT):
 
         # Save filepaths
         self.direct_file = os.path.join(fits_dir, direct_file)
-        self.seg_file = os.path.join(fits_dir, seg_file)
         self.cat = os.path.join(cat_dir, cat)
 
         # Check if direct image was pre-prepared, 
         _DIRECT_OPEN = True
         open_direct = fits.open(self.direct_file)
-        if "INSTRUME" in open_direct[0].header.keys():
-            _READY_DIRECT =True
-        
-        if not _READY_DIRECT:
-            open_direct = prepare_direct_fits(open_direct)
-            open_direct.write_to("/tmp/prepared_{0}".format(direct_file))
-            return "FAIL"
 
+        # If not, prepared it and save in /tmp/
+        if "CONFFILE" not in open_direct[0].header.keys():
+            assert config_file is not None, "Must supply prepared direct image or config_file realpath"
+            assert type(config_file) is str, "config_file realpath must be supplied as a string"
+
+            open_direct = self.prepare_direct_fits(open_direct, config_file=config_file)
+            open_direct.writeto("/tmp/prepared_{0}".format(direct_file), overwrite=True)
+
+            self.direct_file="/tmp/prepared_{0}".format(direct_file)
+        
+        if seg_file is None:
+            self.empty_seg_like(open_direct)
+        else:
+            self.seg_file = os.path.join(fits_dir, seg_file)
 
         # run Grizli.model.GrismFLT init function
         GrismFLT.__init__(self, direct_file=self.direct_file, seg_file=self.seg_file, pad=pad)
@@ -154,8 +206,42 @@ class grism_sim(GrismFLT):
         if _DIRECT_OPEN:
             open_direct.close()
 
-    def prepare_direct_fits(self, open_fits, hdr_injection):
+    def prepare_direct_fits(self, open_fits, config_file=None, hdr_injection=None):
+        """
+        If the direct image passed in is not prepared first, this function will prepare and return the HDUList (i.e. open 
+        fits file). It will insert certain headerentries, and rotate the image. The image is rotated because Roman 
+        disperses along the y-axis, but Grizli disperses along the x-axis. 
+
+        Parameters:
+        ----------
+        open_fits: astropy.io.fits.hdu.hdulist.HDUList
+            Fits file opened with astropy.io.fits.open().
+
+        config_file: str
+            config_file or hdr_injection argument must be given
+            Full Path to config file describing Dispersion. See aXe use manual Chapter 5.2 for info on config file.
+            default: None
         
+        hdr_injection: dict
+            config_file or hdr_injection argument must be given
+            Python dictionary of new/altered header information. Should be formation as {hdr_key: ext;hdr_value}.
+            This way the dictionary value can be split at the semi-colon into the fits extension where the header
+            data is the be changed and the appropriate value for that change.
+            default: None, later set to :
+            {"INSTRUME": "0;ROMAN", "FILTER": "0;d1_", "CONFFILE": "1;config_file"}
+        """
+
+        # Check that at least one arg between hdr_injection and config_file were passed in
+        msg = "Must supply either hdr_injection or config_file (config_file is used in default hdr_injection)"
+        assert not config_file is None and hdr_injection is None, msg
+
+        # Set default hdr_injection
+        if hdr_injection is None:
+            hdr_injection = {"INSTRUME":    "0;ROMAN",
+                             "FILTER":      "0;d1_",
+                             "CONFFILE":    "1;{0}".format(config_file)}
+        
+        # Iterate through hdr_injection to prep header
         for key in hdr_injection.keys():
             try:
                 ext, value = hdr_injection[key].split(";") # split "ext;value" into seperate variables
@@ -166,9 +252,31 @@ class grism_sim(GrismFLT):
             
             open_fits[ext].header[key] = value
 
-        open_fits[1].data = np.rot90(open_fits[1].data, k=3)
+        # Rotate image data
+        for hdu in open_fits:
+            if hdu is astropy.io.fits.hdu.image.ImageHDU:
+                hdu.data = np.rot90(hdu.data, k=3)
 
         return open_fits
+    
+    def empty_seg_like(self, open_fits):
+        """
+        Save an empty segmentation fits file in the /tmp folder using the direct image header and data shape.
+
+        Parameters:
+        ----------
+        open_fits: astropy.io.fits.hdu.hdulist.HDUList
+            Fits file opened with astropy.io.fits.open().
+        """
+
+        hdr = open_fits[1].header
+        data = np.zeros_like(open_fits[1].data)
+
+        self.seg_file = "/tmp/empty_seg.fits"
+
+        fits.writeto(self.seg_file, data=data, header=hdr)
+
+        return self
 
     def show_current_model(self, **kwargs):
         """
@@ -227,7 +335,7 @@ class grism_sim(GrismFLT):
 
         else:
 
-            theta = object["THETA_IMAGE"]
+            theta = object["THETA_IMAGE"] * (np.pi / 180) # Theta is radians
             a = object["A_IMAGE"]
             b = object["B_IMAGE"]
             ell = (theta, a, b)
@@ -301,7 +409,3 @@ class grism_sim(GrismFLT):
 
         return self.compute_model_orders(id, mag=mag, compute_size=False, size=77, in_place=in_place, 
                                          store=False, is_cgs=True, spectrum_1d=[spec.wave, spec.flux])
-                                        
-    def simple_extract(self):
-        print("TODO")
-        return 1
