@@ -1,6 +1,7 @@
 # WIP Issues
 
 1) Factor of 2 issue; matching scale/count rate 
+    - Check scale issue with template; Sum is higher flux than template, max is close to appropriate flux
 2) Wavelength-depedent PSF 
 
 0) Producing direct image? (Minor capability for testing; we don't want to scale this)
@@ -17,6 +18,8 @@
 
 5) [x] Where does Grizli get total flux from? Direct Image? Provided Spectrum? Try doubling direct image values and comparing grism sim scale. Does it change? Do it again with provided spectrum.
 
+6) [ ] Continue fleshing out grism_sim class in abstraction.py.
+
 # Resolutions
 
 1) Units error. Fixing the error assuages the issue. Switching to use the sed from HLSS products improves things further. Also, padding inclusions offsets seg map locations; need to be sure to track padding presence intentionally.
@@ -27,9 +30,10 @@
 
 # Progress
 
+3) See single_pix.ipynb. Extracted spectrum from a single pixel object matches expectation (almost perfectly). Expectation is define: (spectrum_template * sensitivity_curve) -> summed in ~10 angstrom bins; binned array contains flux expectations. Also see sim_and_extraction: simulated each object individually to avoid contamination, and extracting in the sim for-loop. Things seem about right. Object 17127 has equal sum and max extractions, but does not sit exactly on the template. Candidate for scale checks.
 
-3) See single_pix.ipynb. Extracted spectrum from a single pixel object matches expectation (almost perfectly). Expectation is define: (spectrum_template * sensitivity_curve) -> summed in ~10 angstrom bins; binned array contains flux expectations. Also see sim_and_extraction: simulated each object individually to avoid contamination, and extracting in the sim for-loop. Things seem about right.
+4) Apodizing makes a big difference. The window needs to be refined. Try larger bins; does fewer discontinuities lower the amplitude of the erroneous wiggles? Using only 5 bins largely reduces the FFT wiggles issues, in exchange for a steps isue. Need to figure out how to smooth. Interpolation? Convolution?
 
-4) Apodizing makes a big difference. The window needs to be refined. A principled approach would probably be faster than trial-and-error.
+6) Should build simple extraction methods next.
 
 # Quick Notes Space
