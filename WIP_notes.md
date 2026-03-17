@@ -18,7 +18,6 @@
 
 5) [x] Where does Grizli get total flux from? Direct Image? Provided Spectrum? Try doubling direct image values and comparing grism sim scale. Does it change? Do it again with provided spectrum.
 
-6) [ ] Continue fleshing out grism_sim class in abstraction.py.
 
 # Resolutions
 

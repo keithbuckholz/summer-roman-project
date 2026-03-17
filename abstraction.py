@@ -137,8 +137,9 @@ class grism_sim(GrismFLT):
                 star_spec_file="ukg0v.dat",
                 direct_file="GRS_FOV0_roll0_dx0_dy0_SCA1_direct_final.fits", 
                 seg_file=None, 
-                cat="MOT_SCA1_roll_0_dither_0x_0y_cut_zcut.txt", 
+                catalog="MOT_SCA1_roll_0_dither_0x_0y_cut_zcut.txt", 
                 config_file=None,
+                size=77,
                 pad=100):
 
         # Save Directories
@@ -148,7 +149,10 @@ class grism_sim(GrismFLT):
 
         # Save filepaths
         self.direct_file = os.path.join(fits_dir, direct_file)
-        self.cat = os.path.join(cat_dir, cat)
+        self.cat = os.path.join(cat_dir, catalog)
+
+        # When computing model, compute_size will always be False; this size will be passed in to avoid errors
+        self.size = size
 
         # Check if direct image was pre-prepared, 
         _DIRECT_OPEN = True
@@ -165,7 +169,9 @@ class grism_sim(GrismFLT):
             self.direct_file="/tmp/prepared_{0}".format(direct_file)
         
         if seg_file is None:
-            self.empty_seg_like(open_direct)
+            empty_seg = "empty_seg.fits"
+            self.empty_fits_like(open_direct, filename=empty_seg)
+            self.seg_file = empty_seg
         else:
             self.seg_file = os.path.join(fits_dir, seg_file)
 
@@ -173,7 +179,7 @@ class grism_sim(GrismFLT):
         GrismFLT.__init__(self, direct_file=self.direct_file, seg_file=self.seg_file, pad=pad)
 
         # Load and sort catalog
-        tbl = Table.read(os.path.join(cat_dir, cat), format="ascii")
+        tbl = Table.read(os.path.join(cat_dir, catalog), format="ascii")
         self.cat = tbl.group_by("MODIMAGE")
         self.cat.groups[0].sort("MAG_F1500W", reverse=True)
         self.cat.groups[1].sort("MAG_F1500W", reverse=True)
@@ -259,7 +265,7 @@ class grism_sim(GrismFLT):
 
         return open_fits
     
-    def empty_seg_like(self, open_fits):
+    def empty_fits_like(self, open_fits, filename="empty_seg.fits"):
         """
         Save an empty segmentation fits file in the /tmp folder using the direct image header and data shape.
 
@@ -267,14 +273,15 @@ class grism_sim(GrismFLT):
         ----------
         open_fits: astropy.io.fits.hdu.hdulist.HDUList
             Fits file opened with astropy.io.fits.open().
+
+        filename: str
+            Name of the empty fits. PATH becomes /tmp/{filename}.
+            default: "empty_seg.fits"
         """
 
         hdr = open_fits[1].header
         data = np.zeros_like(open_fits[1].data)
-
-        self.seg_file = "/tmp/empty_seg.fits"
-
-        fits.writeto(self.seg_file, data=data, header=hdr)
+        fits.writeto(filename, data=data, header=hdr, overwrite=True)
 
         return self
 
@@ -289,7 +296,7 @@ class grism_sim(GrismFLT):
 
     def put_on_seg_map(self, object, in_place=False,  return_seg=True):
         """
-        Calculate objects location on detector.
+        Calculate objects location on detector. Returns seg_map array, or self.
 
         Parameters:
         ----------
@@ -407,5 +414,93 @@ class grism_sim(GrismFLT):
 
         spec.convert("flam")
 
-        return self.compute_model_orders(id, mag=mag, compute_size=False, size=77, in_place=in_place, 
+        return self.compute_model_orders(id, mag=mag, compute_size=False, size=self.size, in_place=in_place, 
                                          store=False, is_cgs=True, spectrum_1d=[spec.wave, spec.flux])
+
+    def auto_disperse(self, object, in_place=False):
+        """
+        WIP Conveniece function
+        """
+        
+        self.seg = self.put_on_seg_map(object)
+        model = self.disperse_object(object, in_place=in_place)
+
+        if type(model) is not bool:
+            model = np.rot90(model[1][self.pad[1]:-self.pad[1], self.pad[0]:-self.pad[0]])
+
+        return model
+
+    def flat_model(self, object, in_place=False):
+        """
+        Computers flat model for a single object. Return flat model or self
+
+        Parameters:
+        ----------
+        object: astropy.table.row.Row, or other object with similar indexing
+            Astropy table Row object containing sinlge object's characteristics. May be a different object (e.g. dictionary)
+            using similar indexing methods (i.e. object["NUMBER"]). Minimum required characteristics: NUMBER, MAG_F1500W.
+
+        in_place: bool
+            If True, flat model is computed and added to current model. If False, numpy array containing flat model is returned.
+        """
+        
+        id = object["NUMBER"]
+        mag = object["MAG_F1500W"]
+
+        # Compute segmentation map
+        self.seg = self.put_on_seg_map(object, in_place=False, return_seg=True)
+
+        store_model = self.model # store current model, put back later
+
+        self.compute_full_model([id], mags=[mag], compute_size=False, size=self.size)
+
+        if not in_place:
+            flat_model = self.model
+            self.model = store_model # Put model back in place
+
+            return flat_model.data["SCI"]
+
+        self.model = store_model
+        self.model.data["SCI"] += flat_model.data["SCI"]
+
+        return self
+
+    def extract(self, object, cutout_width=-1):
+        """
+        Performs "naive extraction." Reads counts from cutout region. Corrections must be applied by other methods.
+
+        Parameters:
+        ----------
+        object: astropy.table.row.Row, or other object with similar indexing
+            Astropy table Row object containing sinlge object's characteristics. May be a different object (e.g. dictionary)
+            using similar indexing methods (i.e. object["NUMBER"]). Minimum required characteristics: NUMBER, MAG_F1500W, 
+            MODIMAGE, SPECTEMP.
+
+        cutout_width: int,
+            Length of the cutout region is determined by the config file. Width can be specified here. -1 can be used to indicate
+            full detector width.
+            default: -1
+        """
+
+        x_0 = object["X_IMAGE"]
+        y_0 = object["Y_IMAGE"]
+
+        # Since we're indexing directly into the Grizli model, we cutout and read horizontally
+        x_left_lim = self.conf.dxlam['A'].min()
+        x_right_lim = self.conf_dxlam['A'].max()
+
+        if width == -1:
+            cutout = self.model.data["SCI"][:, x_0-x_left_lim:x_0+x_right_lim]            
+
+        else: 
+            cutout = self.model.data["SCI"][y_0-width:y_0+width, x_0-x_left_lim:x_0+x_right_lim]
+
+        counts = []
+        for ii in range(cutout.shape[1]):
+            counts.append(cutout[:,ii].sum())
+
+        wave = np.linspace(10000, 20000, len(counts))
+
+        spec = S.ArraySpectrum(wave=wave, flux=counts, waveunits="angstroms", fluxunits="counts")
+
+        return spec
